@@ -1,18 +1,64 @@
 import 'package:flutter/material.dart';
-import '../repositories/chapter_repository.dart';
 import '../models/chapter.dart';
+import '../repositories/chapter_repository.dart';
 import 'chapter_screen.dart';
 
+class ChapterSelectScreen extends StatefulWidget {
+  const ChapterSelectScreen({super.key});
 
-// Widgets needed:
-// FutureBuilder<List<Chapter>>
-// ListView.builder
+  @override
+  State<ChapterSelectScreen> createState() => _ChapterSelectScreenState();
+}
 
-// final chapters = chapterRepository.getAllChapters();
+class _ChapterSelectScreenState extends State<ChapterSelectScreen> {
 
-// Navigator.push(
-//   context,
-//   MaterialPageRoute(
-//     builder: (_) => ChapterScreen(chapter: selectedChapter),
-//   ),
-// );
+  final ChapterRepository chapterRepository = ChapterRepository();
+
+  late Future<List<Chapter>> chaptersFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    chaptersFuture = chapterRepository.getAllChapters();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Select Chapter"),
+      ),
+      body: FutureBuilder<List<Chapter>>(
+        future: chaptersFuture,
+        builder: (context, snapshot) {
+
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final chapters = snapshot.data!;
+
+          return ListView.builder(
+            itemCount: chapters.length,
+            itemBuilder: (context, index) {
+              final chapter = chapters[index];
+
+              return ListTile(
+                title: Text(chapter.title),
+                subtitle: Text(chapter.description),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChapterScreen(chapter: chapter),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}

@@ -2,16 +2,66 @@ import 'package:flutter/material.dart';
 import '../models/chapter.dart';
 import 'puzzle_screen.dart';
 
+class ChapterScreen extends StatefulWidget {
+  final Chapter chapter;
 
-// final Chapter chapter;
-// final TextEditingController teamController = TextEditingController();
+  const ChapterScreen({super.key, required this.chapter});
 
-// Navigator.push(
-//   context,
-//   MaterialPageRoute(
-//     builder: (_) => PuzzleScreen(
-//       chapter: chapter,
-//       teamName: teamController.text,
-//     ),
-//   ),
-// );
+  @override
+  State<ChapterScreen> createState() => _ChapterScreenState();
+}
+
+class _ChapterScreenState extends State<ChapterScreen> {
+
+  final TextEditingController teamController = TextEditingController();
+
+  @override
+  void dispose() {
+    teamController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.chapter.title),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+
+            Text(widget.chapter.description),
+
+            const SizedBox(height: 20),
+
+            TextField(
+              controller: teamController,
+              decoration: const InputDecoration(
+                labelText: "Team Name",
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PuzzleScreen(
+                      chapter: widget.chapter,
+                      teamName: teamController.text,
+                    ),
+                  ),
+                );
+              },
+              child: const Text("Start Chapter"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -3,11 +3,18 @@ import 'package:sqflite/sqflite.dart';
 import '../models/session.dart';
 
 class SessionRepository {
-  final dbHelper = DatabaseHelper.instance;
+  SessionRepository();
 
-  //Future<int> createSession(Session session)
-
-  //Future<void> updateSession(Session session)
-
-  //Future<List<Session>> getLeaderboard()
+  // TODO: Add functionality for these functions
+  Future<int> createSession(Session session) async {
+    return Future.value(1);
   }
+
+  Future<void> updateSession(Session session) async {
+    return Future.value();
+  }
+
+  Future<List<Session>> getLeaderboard() async {
+    return Future.value([]);
+  }
+}
