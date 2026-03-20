@@ -32,14 +32,54 @@ class DatabaseHelper {
   
   // Create database tables
   Future _createDB(Database db, int version) async {
+   
+    // Users
     await db.execute('''
-      CREATE TABLE items (
+      CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT,
-        created_at TEXT NOT NULL
+        username TEXT NOT NULL,
+        created_at INTEGER
       )
     ''');
+
+    // Story Chapters
+    await db.execute('''
+      CREATE TABLE chapters (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        description TEXT,
+        is_unlocked TEXT
+      )
+    ''');
+
+    // Puzzles
+    await db.execute('''
+      CREATE TABLE puzzles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        chapter_id INTEGER,
+        title TEXT NOT NULL,
+        description TEXT,
+        solution TEXT,
+        time_limit INTEGER,
+        FOREIGN KEY (chapter_id) REFERENCES chapters(id)
+      )
+    ''');
+
+    // Session (Tracking Progress)
+    await db.execute('''
+      CREATE TABLE session (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id INTEGER,
+        puzzle_id INTEGER,
+        status TEXT,
+        title TEXT NOT NULL,
+        description TEXT,
+        start_time INTEGER,
+        time_limit INTEGER,
+        FOREIGN KEY (puzzle_id) REFERENCES puzzles(id)
+      )
+    ''');
+
   }
   
   // CREATE - Insert new item
