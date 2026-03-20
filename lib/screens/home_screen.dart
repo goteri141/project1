@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'chapter_select_screen.dart';
 import 'leaderboard_screen.dart';
+import '../utils/routes.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,12 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.black),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const ChapterSelectScreen(),
-                  ),
+                  fadeRoute(ChapterSelectScreen())
                 );
               },
               child: const Text("Start Game"),
@@ -36,12 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
 
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.black),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const LeaderboardScreen(),
-                  ),
+                  fadeRoute(LeaderboardScreen())
                 );
               },
               child: const Text("Leaderboard"),

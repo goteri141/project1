@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/chapter.dart';
 import 'puzzle_screen.dart';
+import '../utils/routes.dart';
+
 
 class ChapterScreen extends StatefulWidget {
   final Chapter chapter;
@@ -46,15 +48,16 @@ class _ChapterScreenState extends State<ChapterScreen> {
             const SizedBox(height: 20),
 
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.black),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => PuzzleScreen(
-                      chapter: widget.chapter,
-                      teamName: teamController.text,
-                    ),
-                  ),
+                  fadeRoute(PuzzleScreen(
+                    chapter: widget.chapter,
+                    teamName: teamController.text,)
+                  )
                 );
               },
               child: const Text("Start Chapter"),

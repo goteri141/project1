@@ -4,6 +4,8 @@ import '../models/puzzle.dart';
 import '../repositories/puzzle_repository.dart';
 import '../repositories/session_repository.dart';
 import 'leaderboard_screen.dart';
+import '../utils/routes.dart';
+
 
 class PuzzleScreen extends StatefulWidget {
   final Chapter chapter;
@@ -80,19 +82,23 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
             const SizedBox(height: 20),
 
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.black),
               onPressed: () {
                 // checkAnswer later
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const LeaderboardScreen(),
-                  ),
+                  fadeRoute(LeaderboardScreen())
                 );
               },
               child: const Text("Submit"),
             ),
 
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.black),
               onPressed: () {
                 // showHint later
                 

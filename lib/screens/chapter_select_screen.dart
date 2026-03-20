@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/chapter.dart';
 import '../repositories/chapter_repository.dart';
 import 'chapter_screen.dart';
+import '../utils/routes.dart';
+
 
 class ChapterSelectScreen extends StatefulWidget {
   const ChapterSelectScreen({super.key});
@@ -49,9 +51,7 @@ class _ChapterSelectScreenState extends State<ChapterSelectScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => ChapterScreen(chapter: chapter),
-                    ),
+                    fadeRoute(ChapterScreen(chapter: chapter))
                   );
                 },
               );
