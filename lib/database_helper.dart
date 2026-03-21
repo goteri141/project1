@@ -80,6 +80,21 @@ class DatabaseHelper {
       )
     ''');
 
+    // Leaderboard (Display User's score)
+    await db.execute('''
+      CREATE TABLE leaderboard (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id INTEGER,
+        user_id INTEGER,
+        rank INTEGER,
+        time INTEGER,
+        score INTEGER,
+
+        FOREIGN KEY (session_id) REFERENCES session(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      )
+    ''');
+
   }
   
   // CREATE - Insert new users
