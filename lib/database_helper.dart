@@ -82,12 +82,12 @@ class DatabaseHelper {
 
   }
   
-  // CREATE - Insert new item
-  Future<int> createItem(Map<String, dynamic> item) async {
+  // CREATE - Insert new users
+   Future<int> createUser(Map<String, dynamic> user) async {
     final db = await database;
-    return await db.insert('items', item);
+    return await db.insert('users', user);
   }
-  
+
   // READ - Get all items
   Future<List<Map<String, dynamic>>> getAllItems() async {
     final db = await database;
