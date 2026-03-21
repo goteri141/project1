@@ -115,6 +115,12 @@ class DatabaseHelper {
     return await db.insert('puzzles', puzzle);
   }
 
+  // CREATE - Create new sessions
+  Future<int> createSession(Map<String, dynamic> session) async {
+    final db = await database;
+    return await db.insert('session', session);
+  }
+
   // CREATE - Insert new user's score
   Future<int> createScore(Map<String, dynamic> score) async {
     final db = await database;
