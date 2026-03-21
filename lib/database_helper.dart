@@ -38,7 +38,7 @@ class DatabaseHelper {
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL,
-        created_at INTEGER
+        created_at TEXT NOT NULL
       )
     ''');
 
@@ -48,7 +48,8 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
         description TEXT,
-        is_unlocked TEXT
+        is_unlocked TEXT,
+        created_at TEXT NOT NULL
       )
     ''');
 
@@ -61,6 +62,7 @@ class DatabaseHelper {
         description TEXT,
         solution TEXT,
         time_limit INTEGER,
+        created_at TEXT NOT NULL,
         FOREIGN KEY (chapter_id) REFERENCES chapters(id)
       )
     ''');
@@ -76,6 +78,8 @@ class DatabaseHelper {
         description TEXT,
         start_time INTEGER,
         time_limit INTEGER,
+        created_at TEXT NOT NULL,
+
         FOREIGN KEY (puzzle_id) REFERENCES puzzles(id)
       )
     ''');
@@ -89,6 +93,7 @@ class DatabaseHelper {
         rank INTEGER,
         time INTEGER,
         score INTEGER,
+        created_at TEXT NOT NULL,
 
         FOREIGN KEY (session_id) REFERENCES session(id),
         FOREIGN KEY (user_id) REFERENCES users(id)
@@ -128,11 +133,12 @@ class DatabaseHelper {
   }
 
 
-  // READ - Get all items
-  Future<List<Map<String, dynamic>>> getAllItems() async {
+  // READ - Get all Users
+  Future<List<Map<String, dynamic>>> getAllUsers() async {
     final db = await database;
-    return await db.query('items', orderBy: 'created_at DESC');
+    return await db.query('users', orderBy: 'created_at DESC');
   }
+
   
   // READ - Get single item by ID
   Future<Map<String, dynamic>?> getItem(int id) async {
