@@ -88,6 +88,12 @@ class DatabaseHelper {
     return await db.insert('users', user);
   }
 
+  // CREATE - Insert new chapters
+  Future<int> createChapter(Map<String, dynamic> chapter) async {
+    final db = await database;
+    return await db.insert('chapters', chapter);
+  }
+
   // READ - Get all items
   Future<List<Map<String, dynamic>>> getAllItems() async {
     final db = await database;
