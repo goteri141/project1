@@ -115,6 +115,12 @@ class DatabaseHelper {
     return await db.insert('puzzles', puzzle);
   }
 
+  // CREATE - Insert new user's score
+  Future<int> createScore(Map<String, dynamic> score) async {
+    final db = await database;
+    return await db.insert('leaderboard', score);
+  }
+
 
   // READ - Get all items
   Future<List<Map<String, dynamic>>> getAllItems() async {
