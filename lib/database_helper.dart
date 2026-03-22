@@ -231,6 +231,7 @@ class DatabaseHelper {
     );
   }
 
+  // UPDATE - Update existing chapter
   Future<int> updateChapter(int id, Map<String, dynamic> chapter) async {
     final db = await database;
     return await db.update(
@@ -241,6 +242,7 @@ class DatabaseHelper {
     );
   }
 
+  // UPDATE - Update existing puzzle
   Future<int> updatePuzzle(int id, Map<String, dynamic> puzzle) async {
     final db = await database;
     return await db.update(
@@ -251,6 +253,7 @@ class DatabaseHelper {
     );
   }
 
+  // UPDATE - Update existing session
   Future<int> updateSession(int id, Map<String, dynamic> session) async {
     final db = await database;
     return await db.update(
@@ -261,6 +264,7 @@ class DatabaseHelper {
     );
   }
 
+  // UPDATE - Update existing user's score
   Future<int> updateScore(int id, Map<String, dynamic> score) async {
     final db = await database;
     return await db.update(
