@@ -165,11 +165,55 @@ class DatabaseHelper {
 
 
   
-  // READ - Get single item by ID
-  Future<Map<String, dynamic>?> getItem(int id) async {
+  // READ - Get single user by ID
+  Future<Map<String, dynamic>?> getUser(int id) async {
     final db = await database;
     final results = await db.query(
-      'items',
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return results.isNotEmpty ? results.first : null;
+  }
+
+  // READ - Get single chapter by ID
+  Future<Map<String, dynamic>?> getChapter(int id) async {
+    final db = await database;
+    final results = await db.query(
+      'chapters',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return results.isNotEmpty ? results.first : null;
+  }
+
+  // READ - Get single puzzle by ID
+  Future<Map<String, dynamic>?> getPuzzle(int id) async {
+    final db = await database;
+    final results = await db.query(
+      'puzzles',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return results.isNotEmpty ? results.first : null;
+  }
+
+   // READ - Get single puzzle by ID
+  Future<Map<String, dynamic>?> getSession(int id) async {
+    final db = await database;
+    final results = await db.query(
+      'session',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return results.isNotEmpty ? results.first : null;
+  }
+
+   // READ - Get single uuser's score by ID
+  Future<Map<String, dynamic>?> getScore(int id) async {
+    final db = await database;
+    final results = await db.query(
+      'leaderboard',
       where: 'id = ?',
       whereArgs: [id],
     );
