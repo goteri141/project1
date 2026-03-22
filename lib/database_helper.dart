@@ -67,9 +67,9 @@ class DatabaseHelper {
       )
     ''');
 
-    // Session (Tracking Progress)
+    // Sessions (Tracking Progress)
     await db.execute('''
-      CREATE TABLE session (
+      CREATE TABLE sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         session_id INTEGER,
         puzzle_id INTEGER,
@@ -123,7 +123,7 @@ class DatabaseHelper {
   // CREATE - Create new sessions
   Future<int> createSession(Map<String, dynamic> session) async {
     final db = await database;
-    return await db.insert('session', session);
+    return await db.insert('sessions', session);
   }
 
   // CREATE - Insert new user's score
@@ -202,7 +202,7 @@ class DatabaseHelper {
   Future<Map<String, dynamic>?> getSession(int id) async {
     final db = await database;
     final results = await db.query(
-      'session',
+      'sessions',
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -220,12 +220,52 @@ class DatabaseHelper {
     return results.isNotEmpty ? results.first : null;
   }
   
-  // UPDATE - Update existing item
-  Future<int> updateItem(int id, Map<String, dynamic> item) async {
+  // UPDATE - Update existing user
+  Future<int> updateUser(int id, Map<String, dynamic> user) async {
     final db = await database;
     return await db.update(
-      'items',
-      item,
+      'users',
+      user,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> updateChapter(int id, Map<String, dynamic> chapter) async {
+    final db = await database;
+    return await db.update(
+      'chapters',
+      chapter,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> updatePuzzle(int id, Map<String, dynamic> puzzle) async {
+    final db = await database;
+    return await db.update(
+      'puzzles',
+      puzzle,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> updateSession(int id, Map<String, dynamic> session) async {
+    final db = await database;
+    return await db.update(
+      'sessions',
+      session,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> updateScore(int id, Map<String, dynamic> score) async {
+    final db = await database;
+    return await db.update(
+      'leaderboard',
+      score,
       where: 'id = ?',
       whereArgs: [id],
     );
