@@ -275,11 +275,51 @@ class DatabaseHelper {
     );
   }
   
-  // DELETE - Remove item
-  Future<int> deleteItem(int id) async {
+  // DELETE - Remove user
+  Future<int> deleteUser(int id) async {
     final db = await database;
     return await db.delete(
-      'items',
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // DELETE - Remove chapter
+  Future<int> deleteChapter(int id) async {
+    final db = await database;
+    return await db.delete(
+      'chapters',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // DELETE - Remove puzzle
+  Future<int> deletePuzzle(int id) async {
+    final db = await database;
+    return await db.delete(
+      'puzzles',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // DELETE - Remove session
+  Future<int> deleteSession(int id) async {
+    final db = await database;
+    return await db.delete(
+      'sessions',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // DELETE - Remove score
+  Future<int> deleteScore(int id) async {
+    final db = await database;
+    return await db.delete(
+      'leaderboard',
       where: 'id = ?',
       whereArgs: [id],
     );
