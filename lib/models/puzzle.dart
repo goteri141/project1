@@ -4,29 +4,27 @@ class Puzzle {
   final String question;
   final String answer;
   final String hint;
-  final int orderIndex;
 
-  Puzzle({this.id, required this.chapterId, required this.question, required this.answer, required this.hint, required this.orderIndex});
+  Puzzle({this.id, required this.chapterId, required this.question, required this.answer, required this.hint});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'mission id': chapterId,
+      'chapter_id': chapterId,
       'question': question,
-      'answer': answer,
-      'hint': hint,
-      'order index': orderIndex,
+      'solution': answer,
+      'hint': hint
+      
     };
   }
 
   factory Puzzle.fromMap(Map<String, dynamic> map) {
     return Puzzle(
       id: map['id'],
-      chapterId: map['mission id'],
+      chapterId: map['chapter_id'],
       question: map['question'],
-      answer: map['answer'],
+      answer: map['solution'],
       hint: map['hint'],
-      orderIndex: map['order index'],
     );
   }
 }
