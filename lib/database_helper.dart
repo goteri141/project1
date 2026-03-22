@@ -139,6 +139,31 @@ class DatabaseHelper {
     return await db.query('users', orderBy: 'created_at DESC');
   }
 
+  // READ - Get all Chapters
+  Future<List<Map<String, dynamic>>> getAllChapters() async {
+    final db = await database;
+    return await db.query('chapters', orderBy: 'created_at DESC');
+  }
+
+  // READ - Get all Puzzles
+  Future<List<Map<String, dynamic>>> getAllPuzzles() async {
+    final db = await database;
+    return await db.query('puzzles', orderBy: 'created_at DESC');
+  }
+
+  // READ - Get all Sessions
+  Future<List<Map<String, dynamic>>> getAllSessions() async {
+    final db = await database;
+    return await db.query('sessions', orderBy: 'created_at DESC');
+  }
+
+ // READ - Get all Users' scores
+ Future<List<Map<String, dynamic>>> getAllScores() async {
+    final db = await database;
+    return await db.query('leaderboard', orderBy: 'created_at DESC');
+  }
+
+
   
   // READ - Get single item by ID
   Future<Map<String, dynamic>?> getItem(int id) async {
