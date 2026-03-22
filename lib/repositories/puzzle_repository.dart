@@ -7,7 +7,7 @@ class PuzzleRepository {
 
   Future<List<Puzzle>> getPuzzlesByChapter(int chapterId) async {
     final db = await dbHelper.database;
-    final result = await db.query('missions');
+    final result = await db.query('chapters');
 
     return result.map((e) => Puzzle.fromMap(e)).toList();
   }

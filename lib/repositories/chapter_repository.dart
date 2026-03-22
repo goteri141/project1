@@ -3,12 +3,17 @@ import 'package:sqflite/sqflite.dart';
 import '../models/chapter.dart';
 
 class ChapterRepository {
-  final dbHelper = DatabaseHelper.instance;
+  ChapterRepository();
 
-  Future<List<Chapter>> getAllMissions() async {
-    final db = await dbHelper.database;
-    final result = await db.query('missions');
+  Future<List<Chapter>> getAllChapters() async {
+  // Dummy chapter so chapter select can show something
+  return Future.value([
+    Chapter(id: 1, title: 'Chapter 1', description: 'Intro story...'),
+  ]);
+}
 
-    return result.map((e) => Chapter.fromMap(e)).toList();
+  // Implement later, maybe
+  Future<Chapter?> getChapterById(int id) async {
+    return Future.value(null);
   }
 }
