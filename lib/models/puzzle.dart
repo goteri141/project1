@@ -2,7 +2,7 @@ class Puzzle {
   final int? id;
   final int chapterId;
   final String question;
-  final String answer;
+  final List answer;
   final String hint;
 
   Puzzle({this.id, required this.chapterId, required this.question, required this.answer, required this.hint});
