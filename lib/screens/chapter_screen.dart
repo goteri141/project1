@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/chapter.dart';
-import '../repositories/puzzle_repository.dart';
 import 'puzzle_screen.dart';
 import '../utils/routes.dart';
 
@@ -39,6 +38,7 @@ class _ChapterScreenState extends State<ChapterScreen> {
 
             const SizedBox(height: 20),
 
+            // Input box for the team name before starting the chapter. Session uses this name to track progress
             TextField(
               controller: teamController,
               decoration: const InputDecoration(

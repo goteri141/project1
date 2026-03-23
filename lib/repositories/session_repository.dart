@@ -8,6 +8,7 @@ class SessionRepository {
     final db = await dbHelper.database;
     return await db.insert('sessions', {
       'chapter_id': session.chapterId,
+      'chapter_title': session.chapterTitle,
       'team_name': session.teamName,
       'start_time': session.startTime,
       'end_time': session.endTime,
@@ -38,6 +39,7 @@ class SessionRepository {
     return rows.map((row) => Session(
       id: row['id'] as int,
       chapterId: row['chapter_id'] as int,
+      chapterTitle: row['chapter_title'] as String, // add this
       teamName: row['team_name'] as String,
       startTime: row['start_time'] as int,
       endTime: row['end_time'] as int?,

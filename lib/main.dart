@@ -15,6 +15,7 @@ class MysteryCompanionApp extends StatefulWidget {
 class _MysteryCompanionAppState extends State<MysteryCompanionApp> {
   ThemeMode _themeMode = ThemeMode.light;
 
+  // Function for toggling theme
   void toggleTheme(bool isDark) {
     setState(() {
       _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;

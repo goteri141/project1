@@ -41,9 +41,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
 
   Future<void> loadPuzzles() async {
     final fetched = await puzzleRepository.getPuzzlesByChapter(widget.chapter.id);
-    // Create session when puzzles load and we're ready to start
+    // Create session when puzzles load
     final id = await sessionRepository.createSession(Session(
       chapterId: widget.chapter.id,
+      chapterTitle: widget.chapter.title,
       teamName: widget.teamName,
       startTime: startTime,
       endTime: null,
@@ -59,6 +60,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     final userAnswer = answerController.text.trim().toLowerCase();
     final correctAnswers = puzzles[currentIndex].answer.map((a) => a.toLowerCase()).toList();
 
+    // Check if user's answer is in the correct answers list
     if (correctAnswers.contains(userAnswer)) {
       if (currentIndex + 1 < puzzles.length) {
         setState(() {
@@ -66,11 +68,12 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
           answerController.clear();
         });
       } else {
-        // Save completed session
+        // Save completed session if user's answer is correct
         final endTime = DateTime.now().millisecondsSinceEpoch;
         await sessionRepository.updateSession(Session(
           id: sessionId,
           chapterId: widget.chapter.id,
+          chapterTitle: widget.chapter.title,
           teamName: widget.teamName,
           startTime: startTime,
           endTime: endTime,
@@ -82,6 +85,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
           fadeRoute(LeaderboardScreen()),
         );
       }
+    // If user's answer is incorrect, tell them to try again
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Incorrect answer, try again!")),

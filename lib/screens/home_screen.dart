@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           Row(
             children: [
+              // Switch for toggling theme
               const Icon(Icons.light_mode),
               Switch(
                 value: widget.isDarkMode,

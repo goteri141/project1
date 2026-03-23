@@ -30,6 +30,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
       body: FutureBuilder<List<Session>>(
         future: sessionsFuture,
         builder: (context, snapshot) {
+          // Icons for leaderboard positions
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -40,6 +41,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             return const Center(child: Text("No completed sessions yet."));
           }
 
+          // Getting, parsing, and displaying information for each session for leaderboard
           return ListView.builder(
             itemCount: sessions.length,
             itemBuilder: (context, index) {
@@ -54,7 +56,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               return ListTile(
                 leading: CircleAvatar(child: Text('${index + 1}')),
                 title: Text(session.teamName),
-                subtitle: Text('Hints used: ${session.hintsUsed}  •  Time: $timeStr'),
+                subtitle: Text('${session.chapterTitle}  •  Hints: ${session.hintsUsed}  •  Time: $timeStr'),
               );
             },
           );

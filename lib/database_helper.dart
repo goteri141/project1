@@ -27,7 +27,7 @@ class DatabaseHelper {
   
   return await openDatabase(
     path,
-    version: 2, // bump from 1 to 2
+    version: 3,
     onCreate: _createDB,
     onUpgrade: (db, oldVersion, newVersion) async {
       await db.execute('DROP TABLE IF EXISTS sessions');
@@ -35,6 +35,7 @@ class DatabaseHelper {
         CREATE TABLE sessions (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           chapter_id INTEGER NOT NULL,
+          chapter_title TEXT NOT NULL,
           team_name TEXT NOT NULL,
           start_time INTEGER NOT NULL,
           end_time INTEGER,
@@ -86,14 +87,15 @@ class DatabaseHelper {
     // Sessions (Tracking Progress)
     await db.execute('''
       CREATE TABLE sessions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      chapter_id INTEGER NOT NULL,
-      team_name TEXT NOT NULL,
-      start_time INTEGER NOT NULL,
-      end_time INTEGER,
-      hints_used INTEGER NOT NULL DEFAULT 0
-    )
-  ''');
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        chapter_id INTEGER NOT NULL,
+        chapter_title TEXT NOT NULL,
+        team_name TEXT NOT NULL,
+        start_time INTEGER NOT NULL,
+        end_time INTEGER,
+        hints_used INTEGER NOT NULL DEFAULT 0
+      )
+    ''');
 
     // Leaderboard (Display User's score)
     await db.execute('''

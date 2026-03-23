@@ -34,6 +34,7 @@ class _ChapterSelectScreenState extends State<ChapterSelectScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Select Chapter')),
       body: ListView.builder(
+        // List that displays all chapters and preview of their story
         itemCount: chapters.length,
         itemBuilder: (context, index) {
           final chapter = chapters[index];

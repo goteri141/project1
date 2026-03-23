@@ -1,6 +1,7 @@
 class Session {
   final int? id;
   final int chapterId;
+  final String chapterTitle;
   final String teamName;
   final int startTime;
   final int? endTime;
@@ -9,6 +10,7 @@ class Session {
   Session({
     this.id,
     required this.chapterId,
+    required this.chapterTitle,
     required this.teamName,
     required this.startTime,
     this.endTime,
@@ -19,6 +21,7 @@ class Session {
     return {
       'id': id,
       'chapter_id': chapterId,
+      'chapter_title': chapterTitle,
       'team_name': teamName,
       'start_time': startTime,
       'end_time': endTime,
@@ -30,6 +33,7 @@ class Session {
     return Session(
       id: map['id'] as int?,
       chapterId: map['chapter_id'] as int,
+      chapterTitle: map['chapter_title'] as String,
       teamName: map['team_name'] as String,
       startTime: map['start_time'] as int,
       endTime: map['end_time'] as int?,
