@@ -1,6 +1,8 @@
 // Import required packages
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../models/chapter.dart';
+import '../models/puzzle.dart';
 
 // DatabaseHelper class - Singleton pattern
 class DatabaseHelper {
@@ -20,15 +22,28 @@ class DatabaseHelper {
   
   // Initialize database
   Future<Database> _initDB(String filePath) async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, filePath);
-    
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _createDB,
-    );
-  }
+  final dbPath = await getDatabasesPath();
+  final path = join(dbPath, filePath);
+  
+  return await openDatabase(
+    path,
+    version: 2, // bump from 1 to 2
+    onCreate: _createDB,
+    onUpgrade: (db, oldVersion, newVersion) async {
+      await db.execute('DROP TABLE IF EXISTS sessions');
+      await db.execute('''
+        CREATE TABLE sessions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          chapter_id INTEGER NOT NULL,
+          team_name TEXT NOT NULL,
+          start_time INTEGER NOT NULL,
+          end_time INTEGER,
+          hints_used INTEGER NOT NULL DEFAULT 0
+        )
+      ''');
+    },
+  );
+}
   
   // Create database tables
   Future _createDB(Database db, int version) async {
@@ -71,19 +86,14 @@ class DatabaseHelper {
     // Sessions (Tracking Progress)
     await db.execute('''
       CREATE TABLE sessions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        session_id INTEGER,
-        puzzle_id INTEGER,
-        status TEXT,
-        title TEXT NOT NULL,
-        description TEXT,
-        start_time INTEGER,
-        time_limit INTEGER,
-        created_at TEXT NOT NULL,
-
-        FOREIGN KEY (puzzle_id) REFERENCES puzzles(id)
-      )
-    ''');
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      chapter_id INTEGER NOT NULL,
+      team_name TEXT NOT NULL,
+      start_time INTEGER NOT NULL,
+      end_time INTEGER,
+      hints_used INTEGER NOT NULL DEFAULT 0
+    )
+  ''');
 
     // Leaderboard (Display User's score)
     await db.execute('''
@@ -101,81 +111,96 @@ class DatabaseHelper {
       )
     ''');
 
-    final chapters = [
-  {
-    'id': 01,
-    'title': 'Chapter 1 - The Gate',
-    'description': "Welcome to the Mystery Puzzle & Escape Room Companion.\nYou will step into the role of a detective.\nThe victim, Sarah Thompson, a 34-year-old woman, was found dead inside her mansion with no signs of forced entry.\nYou arrived at Ms. Thompson's mansion.\nBut something stands in your way.\nThe iron gate is locked.\nSolve the riddle to gain access to the mansion.",
-  },
-  {
-    'id': 02,
-    'title': 'Chapter 2 - Into the Rose Garden',
-    'description': "The iron gate slowly opens.\nYou step inside and walked along the paved walkway.\n You stumbled upon the rose garden.\nThe path is narrow, surrounded by towering bushes of thorns and blooms.\nYou've noticed something strange.\nHalf of the roses in the garden are darker, their petails slightly wilted like someone intentionally did it.\nSolve the riddle to uncover the clue in the garden.",
-  },
-  {
-    'id': 03,
-    'title': 'Chapter 3 - A Bloody Entrance',
-    'description': "You approach the front door of the mansion.\nAs you attempt to open the door, a dark, handprint stain marks the handle... blood.\nBut there are no signs of struggle nearby. No broken glass or forced entry.\nSomething about this doesn't add up. \nYou open the door.\nBefore you stepped inside, you noticed a clue.\nSolve the riddle to uncover what happened at the entrance.",
-  },
-  {
-    'id': 04,
-    'title': 'Chapter 4 - The Haunted Mansion',
-    'description': "The door shuts behind you as you make your way inside.\nFurniture neatly arranged, as if nothing ever happened.\nPortraits line the walls, giviing off a creepy and eerie aura.\nHowever, you've noticed one frame is missing.\nSolve the riddle to uncover the missing portrait.",
-  },
-  {
-    'id': 05,
-    'title': 'Chapter 5 - The Bedroom',
-    'description': "You walked upstairs and made your way to the bedroom at the beginning of the hall.\nThis is where Sarah Thompson was found.\nThe room is dark, you turned on your flashlight and found a diary opened on the nightstand.\nYou look through the pages, but one entry stands out.\nIt felt rushed like she knew something. Maybe even the person responsible for her death.\nSolve the riddle to uncover the truth in her message.   ",
-  },
-];
+    // --- SEED CHAPTERS ---
+    final List<Chapter> chapters = [
+      Chapter(
+        id: 1,
+        title: "Chapter 1 - The Gate",
+        description: "Welcome to the Mystery Puzzle & Escape Room Companion.\nYou will step into the role of a detective.\nThe victim, Sarah Thompson, a 34-year-old woman, was found dead inside her mansion with no signs of forced entry.\nYou arrived at Ms. Thompson's mansion.\nBut something stands in your way.\nThe iron gate is locked.\nSolve the riddle to gain access to the mansion."
+      ),
+      Chapter(
+        id: 2,
+        title: "Chapter 2 - Into the Rose Garden",
+        description: "The iron gate slowly opens.\nYou step inside and walked along the paved walkway.\n You stumbled upon the rose garden.\nThe path is narrow, surrounded by towering bushes of thorns and blooms.\nYou've noticed something strange.\nHalf of the roses in the garden are darker, their petails slightly wilted like someone intentionally did it.\nSolve the riddle to uncover the clue in the garden."
+      ),
+      Chapter(
+        id: 3,
+        title: "Chapter 3 - A Bloody Entrance",
+        description: "You approach the front door of the mansion.\nAs you attempt to open the door, a dark, handprint stain marks the handle... blood.\nBut there are no signs of struggle nearby. No broken glass or forced entry.\nSomething about this doesn't add up. \nYou open the door.\nBefore you stepped inside, you noticed a clue.\nSolve the riddle to uncover what happened at the entrance."
+      ),
+      Chapter(
+        id: 4,
+        title: "Chapter 4 - The Haunted Mansion",
+        description: "The door shuts behind you as you make your way inside.\nFurniture neatly arranged, as if nothing ever happened.\nPortraits line the walls, giving off a creepy and eerie aura.\nHowever, you've noticed one frame is missing.\nSolve the riddle to uncover the missing portrait."
+      ),
+      Chapter(
+        id: 5,
+        title: "Chapter 5 - The Bedroom",
+        description: "You walked upstairs and made your way to the bedroom at the beginning of the hall.\nThis is where Sarah Thompson was found.\nThe room is dark, you turned on your flashlight and found a diary opened on the nightstand.\nYou look through the pages, but one entry stands out.\nIt felt rushed like she knew something. Maybe even the person responsible for her death.\nSolve the riddle to uncover the truth in her message."
+      ),
+    ];
+
     for (var chapter in chapters) {
-      await db.insert('chapters', chapter);
+      await db.insert('chapters', {
+        'title': chapter.title,
+        'description': chapter.description,
+        'is_unlocked': chapter.id == 1 ? 'true' : 'false',
+        'created_at': DateTime.now().toIso8601String(),
+      });
     }
 
-    final puzzles = [
-  {
-    'id': 001,
-    'chapter_id': 01,
-    'question': 'sample',
-    'answer': 'sample',
-    'hint': 'sample',
-  },
-  {
-    'id': 002,
-    'chapter_id': 02,
-    'question': 'You look at a section of roses: \nHealthy, wilted, healthy, wilted.\n\nWhat condition is the next rose in?',
-    'answer': 'healthy',
-    'hint': 'Look at the repeating pattern',
-  },
-  {
-    'id': 003,
-    'chapter_id': 03,
-    'question': 'The door was unlocked.\n',
-    'answer': 'sample',
-    'hint': 'sample',
-  },
-  {
-    'id': 004,
-    'chapter_id': 04,
-    'question': 'There is a note scratched on the wall where the portrait would be:\n"TIAROTR"\nUnscramble the word',
-    'answer': 'traitor',
-    'hint': 'Someone close to her may be involved.',
-  },
-  {
-    'id': 005,
-    'chapter_id': 05,
-    'question': 'The entry seems to be a code. It reads:\n',
-    'answer': 'sample',
-    'hint': 'sample',
-  },
-];
+    // --- SEED PUZZLES ---
+    final List<Puzzle> puzzles = [
+      Puzzle(
+        id: 1,
+        chapterId: 1,
+        question: "I have keys but no locks,\nI have space but no room,\nYou can enter, but you can't go outside.\nWhat am I?",
+        answer: ["keypad", "key", "keylock"],
+        hint: "It has keys, but it is not used to unlock doors."
+      ),
+      Puzzle(
+        id: 2,
+        chapterId: 2,
+        question: "I am wrapped around a red beauty guarding them from harm.\nIf they get too close, they might bleed.\n What am I?",
+        answer: ["thorn", "thorns"],
+        hint: "It's green."
+      ),
+      Puzzle(
+        id: 3,
+        chapterId: 3,
+        question: "The more you take, the more you leave behind.\nWhat am I?",
+        answer: ["footstep", "footsteps", "steps"],
+        hint: "It's something you left behind as you move."
+      ),
+      Puzzle(
+        id: 4,
+        chapterId: 4,
+        question: "I hang but never fall,\nI watch but have no eyes,\nI tell stories without a voice.\nWhat am I?",
+        answer: ["portrait", "painting"],
+        hint: "It sees you without eyes..."
+      ),
+      Puzzle(
+        id: 5,
+        chapterId: 5,
+        question: "I keep your secrets safe at night,\nI hold your thoughts out of sight.\nI have no voice, yet I speak your mind.\nWhat am I?",
+        answer: ["diary", "journal"],
+        hint: "It's a kind of book."
+      ),
+    ];
 
-  for (var puzzle in puzzles) {
-      await db.insert('puzzles', puzzle);
+    for (var i = 0; i < puzzles.length; i++) {
+      final puzzle = puzzles[i];
+      await db.insert('puzzles', {
+        'chapter_id': puzzle.chapterId,
+        'title': 'Puzzle ${i + 1}', // simple title
+        'question': puzzle.question,
+        'solution': puzzle.answer.join(','), // store as comma-separated string
+        'hint': puzzle.hint,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    }
   }
   
-
-  }
   
   // CREATE - Insert new users
    Future<int> createUser(Map<String, dynamic> user) async {
@@ -217,7 +242,7 @@ class DatabaseHelper {
   // READ - Get all Chapters
   Future<List<Map<String, dynamic>>> getAllChapters() async {
     final db = await database;
-    return await db.query('chapters', orderBy: 'created_at DESC');
+    return await db.query('chapters', orderBy: 'created_at ASC');
   }
 
   // READ - Get all Puzzles

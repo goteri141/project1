@@ -13,47 +13,37 @@ class ChapterSelectScreen extends StatefulWidget {
 }
 
 class _ChapterSelectScreenState extends State<ChapterSelectScreen> {
-
-  final ChapterRepository chapterRepository = ChapterRepository();
-
-  late Future<List<Chapter>> chaptersFuture;
+  final chapterRepo = ChapterRepository();
+  List<Chapter> chapters = [];
 
   @override
   void initState() {
     super.initState();
-    chaptersFuture = chapterRepository.getAllChapters();
+    _loadChapters();
+  }
+
+  Future<void> _loadChapters() async {
+    final fetchedChapters = await chapterRepo.getAllChapters();
+    setState(() {
+      chapters = fetchedChapters;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Select Chapter"),
-      ),
-      body: FutureBuilder<List<Chapter>>(
-        future: chaptersFuture,
-        builder: (context, snapshot) {
-
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final chapters = snapshot.data!;
-
-          return ListView.builder(
-            itemCount: chapters.length,
-            itemBuilder: (context, index) {
-              final chapter = chapters[index];
-
-              return ListTile(
-                title: Text(chapter.title),
-                subtitle: Text(chapter.description),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    fadeRoute(ChapterScreen(chapter: chapter))
-                  );
-                },
+      appBar: AppBar(title: Text('Select Chapter')),
+      body: ListView.builder(
+        itemCount: chapters.length,
+        itemBuilder: (context, index) {
+          final chapter = chapters[index];
+          return ListTile(
+            title: Text(chapter.title),
+            subtitle: Text(chapter.description.split('\n')[0] + '...'),
+            onTap: () {
+              Navigator.push(
+                context,
+                fadeRoute(ChapterScreen(chapter: chapter))
               );
             },
           );

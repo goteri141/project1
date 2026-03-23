@@ -1,9 +1,9 @@
 class Chapter {
-  final int? id;
+  final int id;
   final String title;
   final String description;
 
-  Chapter({this.id, required this.title, required this.description});
+  Chapter({required this.id, required this.title, required this.description});
 
   Map<String, dynamic> toMap() {
     return {

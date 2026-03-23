@@ -5,45 +5,97 @@ import '../repositories/puzzle_repository.dart';
 import '../repositories/session_repository.dart';
 import 'leaderboard_screen.dart';
 import '../utils/routes.dart';
-
+import '../models/session.dart';
 
 class PuzzleScreen extends StatefulWidget {
   final Chapter chapter;
   final String teamName;
 
   const PuzzleScreen({
-    super.key,
-    required this.chapter,
-    required this.teamName,
-  });
+    super.key, 
+    required this.chapter, 
+    required this.teamName});
 
   @override
   State<PuzzleScreen> createState() => _PuzzleScreenState();
 }
 
 class _PuzzleScreenState extends State<PuzzleScreen> {
-
   final PuzzleRepository puzzleRepository = PuzzleRepository();
   final SessionRepository sessionRepository = SessionRepository();
 
   List<Puzzle> puzzles = [];
-
   int currentIndex = 0;
   int hintsUsed = 0;
-
-  late DateTime startTime;
+  late int startTime;
+  int? sessionId;
 
   final TextEditingController answerController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    startTime = DateTime.now();
+    startTime = DateTime.now().millisecondsSinceEpoch;
     loadPuzzles();
   }
 
   Future<void> loadPuzzles() async {
-    // load puzzles later
+    final fetched = await puzzleRepository.getPuzzlesByChapter(widget.chapter.id);
+    // Create session when puzzles load and we're ready to start
+    final id = await sessionRepository.createSession(Session(
+      chapterId: widget.chapter.id,
+      teamName: widget.teamName,
+      startTime: startTime,
+      endTime: null,
+      hintsUsed: 0,
+    ));
+    setState(() {
+      puzzles = fetched;
+      sessionId = id;
+    });
+  }
+
+  void submitAnswer() async {
+    final userAnswer = answerController.text.trim().toLowerCase();
+    final correctAnswers = puzzles[currentIndex].answer.map((a) => a.toLowerCase()).toList();
+
+    if (correctAnswers.contains(userAnswer)) {
+      if (currentIndex + 1 < puzzles.length) {
+        setState(() {
+          currentIndex++;
+          answerController.clear();
+        });
+      } else {
+        // Save completed session
+        final endTime = DateTime.now().millisecondsSinceEpoch;
+        await sessionRepository.updateSession(Session(
+          id: sessionId,
+          chapterId: widget.chapter.id,
+          teamName: widget.teamName,
+          startTime: startTime,
+          endTime: endTime,
+          hintsUsed: hintsUsed,
+        ));
+
+        Navigator.pushReplacement(
+          context,
+          fadeRoute(LeaderboardScreen()),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Incorrect answer, try again!")),
+      );
+    }
+  }
+
+  void showHint() {
+    setState(() {
+      hintsUsed++;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(puzzles[currentIndex].hint)),
+    );
   }
 
   @override
@@ -54,55 +106,42 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (puzzles.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text(widget.chapter.title)),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final puzzle = puzzles[currentIndex];
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.chapter.title),
-      ),
+      appBar: AppBar(title: Text(widget.chapter.title)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-
             Text("Puzzle ${currentIndex + 1} / ${puzzles.length}"),
-
             const SizedBox(height: 20),
-
-            if (puzzles.isNotEmpty)
-              Text(puzzles[currentIndex].question),
-
+            Text(puzzle.question),
             const SizedBox(height: 20),
-
             TextField(
               controller: answerController,
-              decoration: const InputDecoration(
-                labelText: "Your Answer",
-              ),
+              decoration: const InputDecoration(labelText: "Your Answer"),
             ),
-
             const SizedBox(height: 20),
-
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.black),
-              onPressed: () {
-                // checkAnswer later
-                Navigator.push(
-                  context,
-                  fadeRoute(LeaderboardScreen())
-                );
-              },
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.black),
+              onPressed: submitAnswer,
               child: const Text("Submit"),
             ),
-
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.black),
-              onPressed: () {
-                // showHint later
-                
-              },
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.black),
+              onPressed: showHint,
               child: const Text("Hint"),
             ),
           ],

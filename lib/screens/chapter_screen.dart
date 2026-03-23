@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/chapter.dart';
+import '../repositories/puzzle_repository.dart';
 import 'puzzle_screen.dart';
 import '../utils/routes.dart';
 

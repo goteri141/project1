@@ -1,19 +1,26 @@
 import '../database_helper.dart';
-import 'package:sqflite/sqflite.dart';
 import '../models/chapter.dart';
 
 class ChapterRepository {
-  ChapterRepository();
+  final dbHelper = DatabaseHelper.instance;
 
   Future<List<Chapter>> getAllChapters() async {
-  // Dummy chapter so chapter select can show something
-  return Future.value([
-    Chapter(id: 1, title: 'Chapter 1', description: 'Intro story...'),
-  ]);
-}
+    final rows = await dbHelper.getAllChapters();
+      return rows.map((row) => Chapter(
+        id: row['id'] as int,
+        title: row['title'] as String,
+        description: row['description'] as String,
+      )).toList();
+    }
 
-  // Implement later, maybe
   Future<Chapter?> getChapterById(int id) async {
-    return Future.value(null);
+    final row = await dbHelper.getChapter(id);
+    if (row == null) return null;
+
+    return Chapter(
+      id: row['id'] as int,
+      title: row['title'] as String,
+      description: row['description'] as String,
+    );
   }
 }
