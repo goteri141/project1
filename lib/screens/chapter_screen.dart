@@ -33,9 +33,10 @@ class _ChapterScreenState extends State<ChapterScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-
-            Text(widget.chapter.description),
-
+            Text(
+              widget.chapter.description,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             const SizedBox(height: 20),
 
             // Input box for the team name before starting the chapter. Session uses this name to track progress

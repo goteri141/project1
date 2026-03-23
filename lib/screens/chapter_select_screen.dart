@@ -22,6 +22,7 @@ class _ChapterSelectScreenState extends State<ChapterSelectScreen> {
     _loadChapters();
   }
 
+  // Call repo to get chapters
   Future<void> _loadChapters() async {
     final fetchedChapters = await chapterRepo.getAllChapters();
     setState(() {
@@ -38,16 +39,20 @@ class _ChapterSelectScreenState extends State<ChapterSelectScreen> {
         itemCount: chapters.length,
         itemBuilder: (context, index) {
           final chapter = chapters[index];
-          return ListTile(
-            title: Text(chapter.title),
-            subtitle: Text(chapter.description.split('\n')[0] + '...'),
-            onTap: () {
-              Navigator.push(
-                context,
-                fadeRoute(ChapterScreen(chapter: chapter))
-              );
-            },
-          );
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: Card(
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  title: Text(chapter.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(chapter.description.split('\n')[0] + '..'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () { Navigator.push(
+                            context,
+                            fadeRoute(ChapterScreen(chapter: chapter))); },
+                ),
+              ),
+            );
         },
       ),
     );

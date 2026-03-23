@@ -57,6 +57,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   }
 
   void submitAnswer() async {
+    // avoid case sensitivity by converting to lowercase
     final userAnswer = answerController.text.trim().toLowerCase();
     final correctAnswers = puzzles[currentIndex].answer.map((a) => a.toLowerCase()).toList();
 
@@ -141,9 +142,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               onPressed: submitAnswer,
               child: const Text("Submit"),
             ),
+            const SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.amber,
               foregroundColor: Colors.black),
               onPressed: showHint,
               child: const Text("Hint"),
